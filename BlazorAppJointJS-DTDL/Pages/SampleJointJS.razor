@@ -1,0 +1,59 @@
+﻿@page "/jointjssample"
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>JointJS Sample</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jointjs/2.2.1/joint.min.css">
+</head>
+
+<body>
+  <!-- 这里是画布 -->
+  <button @onclick="clickConsole1"> invokeJS HelloWorld() </button>
+  
+  <div id="myGraph"></div>
+
+</body>
+</html>
+
+
+
+@code {
+
+   private IJSObjectReference? module;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			module = await JS.
+			InvokeAsync<IJSObjectReference>("import", "./js/sample_JointJS.js");
+		}
+	}
+
+
+
+	private async Task clickConsole1()
+	{
+		await module.InvokeAsync<string>("HelloWorld", "minhao");
+
+	}
+
+	async ValueTask IAsyncDisposable.DisposeAsync()
+	{
+		if ( module is not null)
+		{
+			await module.DisposeAsync();
+		}
+	}
+
+}

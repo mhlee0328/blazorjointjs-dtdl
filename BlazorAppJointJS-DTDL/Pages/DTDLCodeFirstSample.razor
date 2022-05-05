@@ -1,0 +1,120 @@
+﻿@page "/dtdlcodefirstsample"
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>DTDL code first JointJS Sample</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jointjs/2.2.1/joint.min.css">
+
+</head>
+
+
+<body>
+    <!-- 这里是画布 -->
+    <button @onclick="clickConsole1"> invokeJS init_dtdlcodefirstsample() </button>
+
+    <h5>[ref from here]<a href="https://github.com/telstra/DigitalTwins-CodeFirst-dotnet">DTDL code first Examples</a></h5>
+
+    <h5>将元素从左边拖入画布，双击删除</h5>
+    <div id="myholder"></div>
+    <button id="saveButton">save</button>
+    <button id="loadButton">load</button> 图模型保存为JSon格式:
+
+    <textarea id="initDTDLmodel" style="width: 100%; height: 300px">@initDTDLmodel</textarea>
+
+    <textarea id="mySavedModel" style="width:100%;height:300px">
+    </textarea>
+
+    <div id="myGraph"></div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+@code {
+
+    private IJSObjectReference? module;
+
+
+    [DigitalTwin(Version=1, DisplayName="ClsAnd")]
+    public class ClsAnd : TwinBase
+    {
+        [TwinProperty] public int In1 { get; set; }
+        [TwinProperty] public int In2 { get; set; }
+        [TwinProperty] public int Out { get; set; }
+    }
+
+
+    [DigitalTwin(Version=1, DisplayName="ClsOr")]
+    public class ClsOr : TwinBase
+    {
+        [TwinProperty] public int In1 { get; set; }
+        [TwinProperty] public int In2 { get; set; }
+        [TwinProperty] public int Out { get; set; }
+    }
+
+
+    [DigitalTwin(Version=1, DisplayName="ClsNot")]
+    public class ClsNot : TwinBase
+    {
+        [TwinProperty] public int In { get; set; }
+        [TwinProperty] public int Out { get; set; }
+    }
+
+    static ModelLibrary modelLibrary = new ModelLibrary();
+    static DigitalTwinSerializer Serializer = new DigitalTwinSerializer(modelLibrary);
+
+    static  string DTDLModel_And = Serializer.SerializeModel(typeof(ClsAnd));
+    static  string DTDLModel_Or = Serializer.SerializeModel(typeof(ClsOr));
+    static  string DTDLModel_not = Serializer.SerializeModel(typeof(ClsNot));
+
+    static  string initDTDLmodel = DTDLModel_And + DTDLModel_Or + DTDLModel_not;
+
+
+
+
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            module = await JS.
+            InvokeAsync<IJSObjectReference>("import", "./js/sample_DTDLcodefirst.js");
+        }
+    }
+
+
+
+    private async Task clickConsole1()
+    {
+        await module.InvokeAsync<string>("init_dtdlcodefirstsample");
+
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (module is not null)
+        {
+            await module.DisposeAsync();
+        }
+    }
+
+
+
+}

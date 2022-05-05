@@ -1,0 +1,73 @@
+﻿@page "/jointjsfbdsample"
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>SampleFBD_JointJS Sample</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jointjs/2.2.1/joint.min.css">
+
+</head>
+
+
+<body>
+  <!-- 这里是画布 -->
+  <button @onclick="clickConsole1"> invokeJS jointjsfbdsample() </button>
+  
+    <h5>[ref from here]<a href="http://www.bjhee.com/jointjs.html">JointJS examples</a></h5>
+
+    <h5>将元素从左边拖入画布，双击删除</h5>
+    <div id="myholder"></div>
+    <button id="saveButton">save</button>
+    <button id="loadButton">load</button> 图模型保存为JSon格式:
+    <textarea id="mySavedModel" style="width:100%;height:300px">
+    </textarea>
+
+  <div id="myGraph"></div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+@code {
+
+   private IJSObjectReference? module;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			module = await JS.
+			InvokeAsync<IJSObjectReference>("import", "./js/sampleFBD_JointJS.js");
+		}
+	}
+
+
+
+	private async Task clickConsole1()
+	{
+		await module.InvokeAsync<string>("samplefbd");
+
+	}
+
+	async ValueTask IAsyncDisposable.DisposeAsync()
+	{
+		if ( module is not null)
+		{
+			await module.DisposeAsync();
+		}
+	}
+
+}

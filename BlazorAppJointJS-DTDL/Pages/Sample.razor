@@ -1,0 +1,39 @@
+﻿@page "/sample"
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<button @onclick="clickConsole1"> invokeJS sayHi() </button>
+
+
+@code {
+
+	private IJSObjectReference? module;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			module = await JS.
+			InvokeAsync<IJSObjectReference>("import", "./js/sample_sayHi.js");
+		}
+	}
+
+
+
+	private async Task clickConsole1()
+	{
+		await module.InvokeAsync<string>("sayHi", "minhao");
+
+	}
+
+	async ValueTask IAsyncDisposable.DisposeAsync()
+	{
+		if ( module is not null)
+		{
+			await module.DisposeAsync();
+		}
+	}
+
+
+
+}
