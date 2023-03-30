@@ -1,3 +1,7 @@
+Live Demo
+BlazorAppJointJS (itridev-blazorapp.azurewebsites.net)
+
+
 # BlazorJointJS-DTDL
 
 Blazor component for clientIO/joint.
