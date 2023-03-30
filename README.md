@@ -1,7 +1,3 @@
-Live Demo
-BlazorAppJointJS (itridev-blazorapp.azurewebsites.net)
-
-
 # BlazorJointJS-DTDL
 
 Blazor component for clientIO/joint.
@@ -9,6 +5,14 @@ Blazor component for clientIO/joint.
 I am using Vs2022 and net 6 SDK.
 
 This Blazor WASM project uses the JointJS library which could be repaid to develop Web visualization and interacts with diagrams and graphs.
+
+
+
+# Live Demo
+
+[BlazorAppJointJS (itridev-blazorapp.azurewebsites.net)](https://itridev-blazorapp.azurewebsites.net/)
+
+
 
 - ### JointJS 
 
